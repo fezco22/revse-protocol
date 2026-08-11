@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+target/
+
+# Env & secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Builds
+.next/
+out/
+dist/
+*.wasm
+
+# Stellar / Soroban
+contracts/**/target/
+*.pem
+*.secret
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+
+# impeccable-ignore-start
+# Ephemeral output, runtime state, and per-dev overrides.
+.impeccable/config.local.json
+.impeccable/hook.cache.json
+.impeccable/hook.pending.json
+.impeccable/*.png
+.impeccable/live/
+# Keep tracked: .impeccable/config.json, .impeccable/live/config.json,
+# .impeccable/design.json, .impeccable/critique/*.md
+# impeccable-ignore-end

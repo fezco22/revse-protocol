@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-D warnings"
+
+jobs:
+  check:
+    name: fmt + clippy + tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts -> target
+
+      - name: Format check
+        run: cargo fmt --all -- --check
+
+      - name: Clippy (all targets, deny warnings)
+        run: cargo clippy --all-targets --workspace -- -D warnings
+
+      - name: Test (workspace)
+        run: cargo test --workspace
+
+  wasm:
+    name: wasm build + size check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust (stable) + wasm target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32v1-none
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts -> target
+
+      - name: Build contracts (release, wasm32v1-none)
+        run: |
+          for c in fusdc mock-pool oracle-hub rate-vamm strategy-adapter position-settlement; do
+            cargo build --release --target wasm32v1-none -p "$c"
+          done
+
+      - name: Size check (< 64KB per contract)
+        run: |
+          cd target/wasm32v1-none/release
+          for wasm in *.wasm; do
+            size=$(stat -c%s "$wasm")
+            echo "$wasm: $size bytes"
+            if [ "$size" -gt 65536 ]; then
+              echo "::error::$wasm exceeds the 64KB budget ($size > 65536)"
+              exit 1
+            fi
+          done

@@ -224,7 +224,7 @@ impl PositionSettlement {
             (user.clone(), amount).into_val(&env),
         );
 
-        let interest = term_interest(&env, apy, term);
+        let interest = term_interest(&env, amount, apy, term);
         DepositFx {
             id,
             user: user.clone(),
@@ -265,7 +265,12 @@ impl PositionSettlement {
         }
 
         let term = pos.maturity_ts - pos.open_ts;
-        let interest = term_interest(&env, pos.apy, term.min(common::MAX_TERM_SECONDS));
+        let interest = term_interest(
+            &env,
+            pos.amount,
+            pos.apy,
+            term.min(common::MAX_TERM_SECONDS),
+        );
         let payout = pos.amount + interest;
 
         let fusdc: Address = env.storage().instance().get(&FUSDC).unwrap();
@@ -380,7 +385,7 @@ impl PositionSettlement {
         positions.set(id, pos.clone());
         env.storage().persistent().set(&POSITIONS, &positions);
 
-        let interest = term_interest(&env, apy, term);
+        let interest = term_interest(&env, borrow_amount, apy, term);
         BorrowFx {
             id,
             user: user.clone(),
@@ -416,7 +421,12 @@ impl PositionSettlement {
         pos.user.require_auth();
         let token: Address = env.storage().instance().get(&TOKEN).unwrap();
         let term = pos.maturity_ts - pos.open_ts;
-        let interest = term_interest(&env, pos.apy, term.min(common::MAX_TERM_SECONDS));
+        let interest = term_interest(
+            &env,
+            pos.amount,
+            pos.apy,
+            term.min(common::MAX_TERM_SECONDS),
+        );
         let owed = pos.amount + interest;
 
         // Pull repayment from the user into the vault.
@@ -484,7 +494,7 @@ impl PositionSettlement {
             // collateral vs outstanding. Collateral is USDC so price = 1.
             let value = pos.collateral;
             let elapsed = (now - pos.open_ts).min(common::MAX_TERM_SECONDS);
-            let outstanding = pos.amount + term_interest(&env, pos.apy, elapsed);
+            let outstanding = pos.amount + term_interest(&env, pos.amount, pos.apy, elapsed);
             (
                 value,
                 checked_mul_div(&env, value, RATE_SCALE, outstanding) < liq_threshold,
@@ -606,3 +616,6 @@ fn admin_check(env: &Env) {
     let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
     admin.require_auth();
 }
+
+#[cfg(test)]
+mod test;

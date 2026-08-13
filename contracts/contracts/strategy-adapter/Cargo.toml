@@ -14,3 +14,5 @@ common = { workspace = true }
 
 [dev-dependencies]
 soroban-sdk = { workspace = true, features = ["testutils"] }
+oracle-hub = { path = "../oracle-hub" }
+mock-pool = { path = "../mock-pool" }

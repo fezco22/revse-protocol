@@ -247,3 +247,6 @@ fn admin_check(env: &Env) {
     let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
     admin.require_auth();
 }
+
+#[cfg(test)]
+mod test;

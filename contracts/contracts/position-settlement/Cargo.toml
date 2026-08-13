@@ -14,3 +14,8 @@ common = { workspace = true }
 
 [dev-dependencies]
 soroban-sdk = { workspace = true, features = ["testutils"] }
+fusdc = { path = "../fusdc" }
+oracle-hub = { path = "../oracle-hub" }
+rate-vamm = { path = "../rate-vamm" }
+mock-pool = { path = "../mock-pool" }
+strategy-adapter = { path = "../strategy-adapter" }

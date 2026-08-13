@@ -79,6 +79,9 @@ impl Fusdc {
         let minter: Address = env.storage().instance().get(&MINTER).unwrap();
         minter.require_auth();
         check_amount(amount);
+        if env.storage().instance().get(&PAUSED).unwrap_or(false) {
+            panic!("fusdc: paused");
+        }
         // balance == fUSDC amount
         let bal_key = DataKey::Balance(to.clone());
         let bal: i128 = env.storage().persistent().get(&bal_key).unwrap_or(0);
@@ -104,6 +107,9 @@ impl Fusdc {
         let minter: Address = env.storage().instance().get(&MINTER).unwrap();
         minter.require_auth();
         check_amount(amount);
+        if env.storage().instance().get(&PAUSED).unwrap_or(false) {
+            panic!("fusdc: paused");
+        }
         let bal_key = DataKey::Balance(from.clone());
         let bal: i128 = env.storage().persistent().get(&bal_key).unwrap_or(0);
         if bal < amount {
@@ -269,3 +275,6 @@ fn check_amount(amount: i128) {
         panic!("fusdc: negative amount");
     }
 }
+
+#[cfg(test)]
+mod test;

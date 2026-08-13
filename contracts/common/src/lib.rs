@@ -40,13 +40,14 @@ pub fn rate_to_bps(env: &Env, rate: i128) -> i128 {
     checked_mul_div(env, rate, 10_000, RATE_SCALE)
 }
 
-/// Effective rate for a term: (1 + apy)^(term_seconds / YEAR_SECONDS) - 1,
-/// linearized via annualized rate * term fraction (simple interest approximation).
+/// Effective simple interest for a term:
+///   interest = principal * apy * term_seconds / (RATE_SCALE * YEAR_SECONDS)
 /// For MVP the fixed APY is quoted per annum and the claim payout is
-/// principal * (1 + apy * term_seconds / YEAR_SECONDS).
-pub fn term_interest(env: &Env, apy: i128, term_seconds: u64) -> i128 {
+/// principal + interest.
+pub fn term_interest(env: &Env, principal: i128, apy: i128, term_seconds: u64) -> i128 {
     let frac = checked_mul_div(env, term_seconds as i128, RATE_SCALE, YEAR_SECONDS as i128);
-    mul_rate(env, apy, frac)
+    let annual = mul_rate(env, principal, apy);
+    mul_rate(env, annual, frac)
 }
 
 // -------------------- Cross-contract interfaces --------------------

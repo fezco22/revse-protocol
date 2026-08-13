@@ -34,13 +34,14 @@ impl MockPool {
     /// Deposit USDC into the pool, minting pool shares 1:1.
     pub fn deposit(env: Env, from: Address, amount: i128) -> i128 {
         let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
-        if env.current_contract_address() != admin {
+        if from != admin {
             admin.require_auth();
         }
         if amount <= 0 {
             panic!("mock-pool: amount must be positive");
         }
         let token: Address = env.storage().instance().get(&TOKEN).unwrap();
+        // The pool (as current contract) pulls `from`'s allowance to the pool.
         let _: () = env.invoke_contract(
             &token,
             &Symbol::new(&env, "transfer_from"),
@@ -119,3 +120,6 @@ impl MockPool {
         env.storage().instance().set(&SLOPE, &slope);
     }
 }
+
+#[cfg(test)]
+mod test;

@@ -233,7 +233,7 @@ impl RateVamm {
         env.storage()
             .persistent()
             .set(&TOTAL_FIXED, &(total_fixed + amount));
-        let interest = term_interest(&env, apy, term);
+        let interest = term_interest(&env, amount, apy, term);
         FixedQuote {
             term,
             amount,
@@ -273,13 +273,9 @@ impl RateVamm {
     }
 
     /// Report vaulted principal (idle funds deployed to the strategy) so the
-    /// VAMM can compute utilization. Authorized: admin or strategy caller.
+    /// VAMM can compute utilization. Authorized: admin only.
     pub fn set_total_vaulted(env: Env, vaulted: i128) {
-        let admin: Address = env.storage().instance().get(&ADMIN).unwrap();
-        let caller = env.current_contract_address();
-        if caller != admin {
-            panic!("rate-vamm: unauthorized");
-        }
+        admin_check(&env);
         env.storage().persistent().set(&TOTAL_VAULTED, &vaulted);
     }
 
@@ -366,9 +362,15 @@ impl QuotePublish for QuoteInfo {
             amount,
             apy_bps: rate_to_bps(env, self.apy),
             utilization: self.utilization,
-            interest: term_interest(env, self.apy, term),
+            interest: term_interest(env, amount, self.apy, term),
         }
         .publish(env);
         self
     }
 }
+
+#[cfg(test)]
+mod test;
+
+#[cfg(test)]
+mod properties;

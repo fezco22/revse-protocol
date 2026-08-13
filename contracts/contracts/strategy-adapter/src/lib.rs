@@ -77,6 +77,10 @@ impl StrategyAdapter {
         let token: Address = env.storage().instance().get(&TOKEN).unwrap();
         let pool: Address = env.storage().instance().get(&POOL).unwrap();
 
+        // Authorize this contract to spend/traoste its own USDC in the nested
+        // token + pool calls recorded for this root invocation.
+        env.current_contract_address().require_auth();
+
         // Pull USDC from the vault (transfer_from spender = this adapter).
         let _: () = env.invoke_contract(
             &token,
@@ -127,6 +131,10 @@ impl StrategyAdapter {
         }
         let token: Address = env.storage().instance().get(&TOKEN).unwrap();
         let pool: Address = env.storage().instance().get(&POOL).unwrap();
+
+        // The pool redeems to this adapter and then this adapter transfers its
+        // own USDC to the vault; authorize this contract for the sub-calls.
+        env.current_contract_address().require_auth();
 
         // Redeem from the pool back to this adapter.
         let _: i128 = env.invoke_contract(
@@ -183,3 +191,6 @@ impl StrategyAdapter {
         env.storage().instance().get(&SHARES).unwrap()
     }
 }
+
+#[cfg(test)]
+mod test;

@@ -1,0 +1,5 @@
+[target.x86_64-pc-windows-gnu]
+# Avoid the MinGW "export ordinal too large" failure when `testutils` feature
+# unification inflates the number of exported symbols in the contract cdylibs.
+# Host `.dll` outputs are never used (deployment uses the `wasm32` cdylib).
+rustflags = ["-C", "link-arg=-Wl,--exclude-all-symbols"]

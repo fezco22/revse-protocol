@@ -1,0 +1,47 @@
+name: Deploy (testnet)
+
+on:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-D warnings"
+
+jobs:
+  deploy-testnet:
+    name: Deterministic deploy + init + wiring
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust (stable) + wasm target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32v1-none
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts -> target
+
+      - name: Install stellar CLI (pinned to v25.0.0)
+        uses: stellar/stellar-cli@v25.0.0
+
+      - name: Deploy protocol to testnet
+        working-directory: contracts
+        env:
+          ADMIN_SECRET: ${{ secrets.TESTNET_ADMIN_SECRET }}
+          ADMIN_ADDR: ${{ secrets.TESTNET_ADMIN_ADDR }}
+          TOKEN_ADDR: ${{ secrets.TESTNET_TOKEN_ADDR }}
+          USDC_FEED_ADDR: ${{ secrets.TESTNET_USDC_FEED_ADDR }}
+          RPC_URL: ${{ vars.TESTNET_RPC_URL }}
+          NETWORK_PASSPHRASE: ${{ vars.TESTNET_NETWORK_PASSPHRASE }}
+          STELLAR: stellar
+        run: |
+          bash scripts/deploy-testnet.sh
+
+      - name: Upload deployment records
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployments.env
+          path: contracts/deployments.env
+          if-no-files-found: error

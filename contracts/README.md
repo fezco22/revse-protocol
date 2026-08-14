@@ -55,13 +55,31 @@ ls target/wasm32v1-none/release/*.wasm
 
 ## Deploy workflow (testnet)
 
-1. Build deterministic WASM (hash-pinned `soroban` CLI pinned to the SDK 25 tag).
-2. Deploy each contract with `soroban contract deploy --wasm <file> --source <admin>`.
-3. `init` each contract (`oracle-hub` first, then `rate-vamm`, `mock-pool`,
-   `strategy-adapter`, `fusdc`, `position-settlement` last — it holds the others'
-   addresses).
-4. Verify on Stellar Expert and record tx hashes below.
-5. Admin/feeder keys live in GitHub Secrets; never committed.
+Deterministic deploy + init + wiring is scripted in `scripts/deploy-testnet.sh`.
+It mirrors the integration-tested `deploy_chain()` topology exactly:
+
+```sh
+cp scripts/.env.example .env    # fill ADMIN_SECRET/ADMIN_ADDR, TOKEN_ADDR, USDC_FEED_ADDR
+./scripts/deploy-testnet.sh
+```
+
+The script:
+
+1. Builds deterministic WASM (`--release --target wasm32v1-none`).
+2. Deploys `position-settlement` first (its id is wired into every other
+   contract), then `oracle-hub`, `rate-vamm`, `mock-pool`, `strategy-adapter`,
+   `fusdc`.
+3. `init`s and wires in the exact order from the integration test: OracleHub →
+   RateVAMM (config) → MockPool (admin = strategy) → StrategyAdapter
+   (admin = settlement) → fUSDC (minter = settlement) → VAMM `set_settlement` →
+   OracleHub reporters + USDC SEP-40 feed → PositionSettlement last.
+4. Records every contract id and wasm sha256 to `deployments.env` (hash-pinned
+   deploy evidence; gitignored).
+
+The `stellar` CLI must be on PATH, pinned to the SDK 25 line (v25.0.0).
+Hash-pinning the CLI is what makes the WASM output reproducible.
+
+Verify each contract on Stellar Expert and record tx hashes in the table below.
 
 ### Testnet deployment records
 

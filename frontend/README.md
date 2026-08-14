@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FixYield — Frontend
 
-## Getting Started
+Mobile-first fixed-rate savings on Stellar. See `../PRODUCT.md` and
+`../PRD-fixyield-vamm.md` for the product and spec.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Next.js 16 (App Router) + TypeScript + @stellar/stellar-sdk v16 +
+stellar-wallets-kit (Freighter/Albedo). Tested with Vitest + React Testing
+Library.
+
+## Development
+
+```sh
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Runs in **demo mode** by default: a `DemoSource` mirrors the RateVAMM/Position
+contract behavior locally (virtual AMM quotes, a variable rate that wanders, a
+seeded portfolio, and deposit/claim/repay mutations) so the UI is fully
+explorable without a wallet or testnet.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Set `NEXT_PUBLIC_VAMM_CONTRACT` and `NEXT_PUBLIC_SETTLEMENT_CONTRACT` to switch
+to live Soroban RPC (`src/lib/chain.ts`).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Checks
 
-## Learn More
+```sh
+npm run lint       # eslint
+npm run typecheck  # tsc --noEmit
+npm run test       # vitest run
+npm run build      # next build
+```
 
-To learn more about Next.js, take a look at the following resources:
+All four run in the `frontend` job of `.github/workflows/ci.yml`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app/*` — routes: Market (`/`), Deposit, Positions, Health, Borrow.
+- `src/components/` — Shell (header + bottom tab bar), WalletButton, UI atoms.
+- `src/lib/` — `format.ts` (unit scaling + APY math), `demo.ts` (demo source),
+  `chain.ts` (live RPC), `types.ts`.
+- `src/state/app.tsx` — AppProvider context: wallet, pool, positions, mutation
+  state machine.

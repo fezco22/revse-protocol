@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-carbon: #0a0b0d;
+  --color-surface: #121316;
+  --color-raised: #181a1e;
+  --color-hairline: #26282e;
+  --color-ink: #e7e4de;
+  --color-ink-dim: #a9a7a0;
+  --color-ink-muted: #97949c;
+  --color-ink-faint: #5f5d63;
+  --color-signal: #4de3a1;
+  --color-signal-dim: #2a9d6d;
+  --color-risk: #ff5c64;
+  --color-warn: #f0b35e;
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+:root {
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  border-color: var(--color-hairline);
+}
+
+html {
+  scrollbar-color: #5f5d63 #0a0b0d;
+  text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-carbon);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-signal);
+  color: var(--color-carbon);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 3px;
+}
+
+.caret-signal {
+  caret-color: var(--color-signal);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-carbon);
+}
+::-webkit-scrollbar-thumb {
+  background: #33363c;
+  border: 3px solid var(--color-carbon);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #474b52;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.tick-flash {
+  animation: tick-flash 700ms var(--ease-expo) both;
+}
+@keyframes tick-flash {
+  0% {
+    background: color-mix(in srgb, var(--color-signal) 26%, transparent);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+.stamp {
+  animation: stamp 480ms var(--ease-expo) both;
+}
+@keyframes stamp {
+  0% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(0.96);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.rise {
+  animation: rise 600ms var(--ease-expo) both;
+}
+@keyframes rise {
+  0% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.flap {
+  animation: flap 380ms var(--ease-expo) both;
+}
+@keyframes flap {
+  0% {
+    transform: translateY(0.18em);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.shadow-paper {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 12px 32px -12px rgba(0, 0, 0, 0.7);
+}
+
+.shadow-float {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 24px 64px -24px rgba(0, 0, 0, 0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

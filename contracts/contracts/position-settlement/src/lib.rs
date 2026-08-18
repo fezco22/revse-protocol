@@ -179,18 +179,13 @@ impl PositionSettlement {
         let apy = quote.apy;
         let term: u64 = env.invoke_contract(&vamm, &symbol_short!("term"), ().into_val(&env));
 
-        // 2. Pull USDC from the user (SAC transfer_from with spender = this contract).
-        let sac_transfer_from: Symbol = Symbol::new(&env, "transfer_from");
+        // 2. Pull USDC from the user. `transfer` requires the user's auth,
+        //    which the wallet signs alongside this call, so no prior allowance
+        //    (approve) is needed.
         let _: () = env.invoke_contract(
             &token,
-            &sac_transfer_from,
-            (
-                env.current_contract_address(),
-                user.clone(),
-                env.current_contract_address(),
-                amount,
-            )
-                .into_val(&env),
+            &symbol_short!("transfer"),
+            (user.clone(), env.current_contract_address(), amount).into_val(&env),
         );
 
         // 3. Open the position.
@@ -342,16 +337,11 @@ impl PositionSettlement {
         let apy = quote.apy;
         let term: u64 = env.invoke_contract(&vamm, &symbol_short!("term"), ().into_val(&env));
 
-        // Pull collateral USDC into the vault.
+        // Pull collateral USDC into the vault (user auth signed with this call).
         let _: () = env.invoke_contract(
             &token,
-            &Symbol::new(&env, "transfer_from"),
-            (
-                env.current_contract_address(),
-                user.clone(),
-                env.current_contract_address(),
-                collateral_amount,
-            )
+            &symbol_short!("transfer"),
+            (user.clone(), env.current_contract_address(), collateral_amount)
                 .into_val(&env),
         );
 
@@ -429,17 +419,11 @@ impl PositionSettlement {
         );
         let owed = pos.amount + interest;
 
-        // Pull repayment from the user into the vault.
+        // Pull repayment from the user into the vault (user auth signed here).
         let _: () = env.invoke_contract(
             &token,
-            &Symbol::new(&env, "transfer_from"),
-            (
-                env.current_contract_address(),
-                pos.user.clone(),
-                env.current_contract_address(),
-                owed,
-            )
-                .into_val(&env),
+            &symbol_short!("transfer"),
+            (pos.user.clone(), env.current_contract_address(), owed).into_val(&env),
         );
 
         // Return collateral to the user.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# FixYield — deterministic testnet deploy + init + wiring.
+# Revse — deterministic testnet deploy + init + wiring.
 #
 # Mirrors `deploy_chain()` in contracts/contracts/position-settlement/src/test.rs
 # so the on-chain topology matches the integration-tested one exactly:
@@ -87,7 +87,7 @@ admin_addr() {
 # ---- deploy: position-settlement first (its id is referenced everywhere) --
 RECORDS="$ROOT_DIR/deployments.env"
 : > "$RECORDS"
-echo "# FixYield testnet deployment — generated $(date -u +%FT%TZ)" > "$RECORDS"
+echo "# Revse testnet deployment — generated $(date -u +%FT%TZ)" > "$RECORDS"
 
 declare -A ID
 ID[position-settlement]=$(deploy position-settlement)
@@ -105,7 +105,7 @@ invoke oracle-hub init --admin "$ADMIN" --max-staleness "${MAX_STALENESS:-3600}"
 invoke rate-vamm init \
   --admin "$ADMIN" \
   --oracle_hub "${ID[oracle-hub]}" \
-  --config "{\"term_seconds\":${TERM_SECONDS:-2592000},\"idle_rate\":${IDLE_RATE:-50000000},\"slope\":${SLOPE:-500000000},\"min_rate\":${MIN_RATE:-10000000},\"max_rate\":${MAX_RATE:-250000000}}"
+  --config "{\"term_seconds\":${TERM_SECONDS:-2592000},\"idle_rate\":\"${IDLE_RATE:-50000000}\",\"slope\":\"${SLOPE:-500000000}\",\"min_rate\":\"${MIN_RATE:-10000000}\",\"max_rate\":\"${MAX_RATE:-250000000}\"}"
 
 # 3. mock-pool (admin = strategy-adapter)
 invoke mock-pool init \

@@ -1,7 +1,7 @@
-# FixYield — Soroban Contracts
+# Revse — Soroban Contracts
 
 Fixed-rate lending market on Stellar: a virtual AMM prices 30-day fixed APY over
-a variable-yield pool. See `../PRD-fixyield-vamm.md` for the full spec.
+a variable-yield pool. See `../PRD-revse-vamm.md` for the full spec.
 
 ## Contracts
 

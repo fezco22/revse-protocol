@@ -76,3 +76,27 @@ fixed-rate product today.
 | fUSDC | CDHYA7EMHF4JOXRLJWT627EFQMPU5LM663IKCGYEIKI2EE2QWFNOVL7B |
 | MockPool | CCVSBTACL4E7RHZKENSCR2NZ6WKUOJZB7VUCZMOC3VWC3GHZQRKBQWVY |
 | USDC (SAC) | CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA |
+
+---
+
+## Level 4 Checklist Status
+
+Done in code and committed:
+
+- [x] Production-ready MVP, real on-chain flows (deposit, borrow, repay, claim, swap)
+- [x] Stable frontend and contract architecture
+- [x] Mobile responsive UI
+- [x] Loading states and error handling (stage machine, tx confirmation wait)
+- [x] Smart contracts deployed on Stellar testnet (six contracts)
+- [x] Monitoring and analytics integration (Vercel Analytics, Speed Insights, error boundary)
+- [x] Proper project structure and documentation (README, this file)
+- [x] 15+ meaningful commits
+
+Needs an account or real users (owner to complete):
+
+- [ ] Public GitHub repository (create repo, push)
+- [ ] Production deployment on Vercel (import repo, root directory = frontend)
+- [ ] 10+ real users onboarded, with wallet interaction proof
+- [ ] Basic user feedback collection (form) and summary
+- [ ] Live demo video (1 to 2 minutes)
+- [ ] Screenshots: product UI, mobile view, analytics dashboard

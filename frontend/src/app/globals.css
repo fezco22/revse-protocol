@@ -13,8 +13,8 @@
   --color-signal-dim: #2a9d6d;
   --color-risk: #ff5c64;
   --color-warn: #f0b35e;
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
 :root {
@@ -46,6 +46,14 @@ body {
 :focus-visible {
   outline: 2px solid var(--color-signal);
   outline-offset: 3px;
+}
+
+/* Text inputs show focus via their container border, not a green ring. */
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible {
+  outline: none;
 }
 
 .caret-signal {
@@ -142,17 +150,9 @@ input[type="number"] {
   }
 }
 
+/* Static status dot (blinking removed). */
 .pulse-dot {
-  animation: pulse-dot 1.8s ease-in-out infinite;
-}
-@keyframes pulse-dot {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.25;
-  }
+  opacity: 1;
 }
 
 .shadow-paper {

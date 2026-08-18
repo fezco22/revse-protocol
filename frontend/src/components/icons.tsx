@@ -94,6 +94,24 @@ export function IconX(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function IconSimulate(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" width={20} height={20} {...base} {...props}>
+      <path d="M6 4v16M18 4v16" />
+      <circle cx="6" cy="10" r="2.2" />
+      <circle cx="18" cy="14" r="2.2" />
+    </svg>
+  );
+}
+
+export function IconSwap(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" width={20} height={20} {...base} {...props}>
+      <path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5" />
+    </svg>
+  );
+}
+
 export function IconBorrow(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" width={20} height={20} {...base} {...props}>

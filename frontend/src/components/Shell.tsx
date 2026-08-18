@@ -1,37 +1,76 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { TabBar } from "@/components/TabBar";
 import { WalletButton } from "@/components/WalletButton";
-import { isDemo } from "@/lib/env";
+import { AmbientField } from "@/components/AmbientField";
+import { NAV } from "@/components/nav";
 
 export function Shell({ children }: { children: ReactNode }) {
+  const path = usePathname();
+  const isLanding = path === "/";
+
   return (
     <>
+      {/* Landing renders its own hero backdrop; app pages get a quiet field. */}
+      {!isLanding && <AmbientField />}
       <header className="sticky top-0 z-40 border-b border-hairline bg-carbon/90 backdrop-blur-md">
-        <div className="mx-auto flex h-12 max-w-2xl items-center justify-between px-4">
-          <div className="flex items-center gap-2.5">
+        <div
+          className={`mx-auto flex h-14 items-center gap-6 px-4 sm:px-6 ${
+            isLanding ? "max-w-6xl" : "max-w-6xl"
+          }`}
+        >
+          <Link href={isLanding ? "/" : "/market"} className="flex items-center gap-2.5">
             <span className="grid h-6 w-6 place-items-center rounded-[4px] border border-hairline bg-surface">
               <Mark />
             </span>
             <span className="text-sm font-semibold tracking-tight text-ink">
-              FixYield
+              Revse
             </span>
-            {isDemo && (
-              <span className="num ml-1 border border-hairline px-1.5 py-0.5 text-[9px] uppercase tracking-[0.14em] text-warn">
-                Demo
-              </span>
-            )}
-          </div>
-          <WalletButton />
+          </Link>
+
+          {/* Global nav (desktop) */}
+          {!isLanding && (
+            <nav className="hidden flex-1 items-center gap-1 md:flex">
+              {NAV.map(({ href, label }) => {
+                const active = path === href;
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    aria-current={active ? "page" : undefined}
+                    className={`relative px-3 py-2 text-[13px] font-medium tracking-tight transition-colors ${
+                      active
+                        ? "text-signal"
+                        : "text-ink-muted hover:text-ink"
+                    }`}
+                  >
+                    {label}
+                    {active && (
+                      <span className="absolute inset-x-3 -bottom-[15px] h-px bg-signal" />
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+          )}
+
+          <div className="ml-auto">{!isLanding && <WalletButton />}</div>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-2xl flex-1 px-4 pb-24 pt-6">
-        {children}
-      </main>
+      {isLanding ? (
+        <main className="w-full flex-1">{children}</main>
+      ) : (
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-24 pt-8 sm:px-6 md:pb-12">
+          {children}
+        </main>
+      )}
 
-      <TabBar />
+      {/* Mobile-only bottom tab bar; desktop uses the top nav */}
+      {!isLanding && <TabBar />}
     </>
   );
 }

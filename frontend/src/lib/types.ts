@@ -61,8 +61,12 @@ export interface Quote {
   maturityTs: number;
 }
 
-export const DEMO_USER_ADDR =
-  "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF";
+/** A contract event rendered in the UI feed. */
+export interface UiEvent {
+  name: string;
+  ts: number;
+  ledger: number;
+}
 
 export const ENV = {
   live: Boolean(

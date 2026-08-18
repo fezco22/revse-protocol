@@ -1,9 +1,15 @@
-// ---- FixYield desktop-friendly formatting & math helpers ----
+// ---- Revse mobile-first formatting & math helpers ----
 
 export const RATE_SCALE = 1_000_000_000;
 export const YEAR_SECONDS = 31_557_600;
 export const DAY_SECONDS = 86_400;
 export const TERM_DAYS = 30;
+export const TERM_SECONDS = TERM_DAYS * DAY_SECONDS;
+
+/** A position is claimable once its maturity timestamp (seconds) has passed. */
+export function isReady(maturityTs: number): boolean {
+  return maturityTs <= Math.floor(Date.now() / 1000);
+}
 
 /** rate (RATE_SCALE) -> bp points (e.g. 5.25% -> 525) */
 export function rateToBps(rate: number): number {

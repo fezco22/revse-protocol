@@ -1,7 +1,7 @@
-# FixYield — Frontend
+# Revse — Frontend
 
 Mobile-first fixed-rate savings on Stellar. See `../PRODUCT.md` and
-`../PRD-fixyield-vamm.md` for the product and spec.
+`../PRD-revse-vamm.md` for the product and spec.
 
 ## Stack
 
@@ -36,7 +36,7 @@ All four run in the `frontend` job of `.github/workflows/ci.yml`.
 
 ## Structure
 
-- `src/app/*` — routes: Market (`/`), Deposit, Positions, Health, Borrow.
+- `src/app/*` — routes: landing (`/`), Market, Deposit, Positions, Health, Borrow.
 - `src/components/` — Shell (header + bottom tab bar), WalletButton, UI atoms.
 - `src/lib/` — `format.ts` (unit scaling + APY math), `demo.ts` (demo source),
   `chain.ts` (live RPC), `types.ts`.

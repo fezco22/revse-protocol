@@ -40,3 +40,7 @@ npm-debug.log*
 # Keep tracked: .impeccable/config.json, .impeccable/live/config.json,
 # .impeccable/design.json, .impeccable/critique/*.md
 # impeccable-ignore-end
+
+# Design tooling (impeccable skill), not project code
+.agents/
+skills-lock.json

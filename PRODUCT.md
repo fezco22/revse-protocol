@@ -20,7 +20,7 @@ Primary operating context: the Stellar Journey to Mastery Level 3 (Orange Belt) 
 
 ## Product Purpose
 
-FixYield is a fixed-rate lending market on Stellar. A user locks USDC for a fixed term (MVP: 30 days) at a fixed APY quoted by a Virtual AMM; idle funds are deployed to a Blend lending pool earning variable yield while the VAMM maintains a delta-hedged fixed rate. Success means a depositor can predict their yield exactly at maturity — the fixed-income layer Stellar is missing.
+Revse is a fixed-rate lending market on Stellar. A user locks USDC for a fixed term (MVP: 30 days) at a fixed APY quoted by a Virtual AMM; idle funds are deployed to a Blend lending pool earning variable yield while the VAMM maintains a delta-hedged fixed rate. Success means a depositor can predict their yield exactly at maturity — the fixed-income layer Stellar is missing.
 
 ## Positioning
 
@@ -44,17 +44,17 @@ An approachable, mobile-first fixed-rate (fixed-income) lending market built on 
 - Storage: persistent (positions, reserves, config), temporary (per-call), instance (admin, allowlists); explicit TTL bump on hot keys.
 - Production architecture requirements: SEP-49 upgrade guard, reentrancy guard, emergency pause, oracle allowlists.
 - WASM size budget < 64KB (opt-level=z, LTO): enforces modular contract split.
-- Confirmed product choice locked in: product name FixYield, OracleHub+RateVAMM+PositionSettlement+StrategyAdapter contract split, fUSDC token, Reflector oracle, Blend yield source.
+- Confirmed product choice locked in: product name Revse, OracleHub+RateVAMM+PositionSettlement+StrategyAdapter contract split, fUSDC token, Reflector oracle, Blend yield source.
 
 ## Brand Commitments
 
-- Name: FixYield.
+- Name: Revse.
 - Voice/financial framing: fixed-income, predictable yield, delta-hedged, trust through verifiable on-chain math.
 - No imaged brand assets or external references have been provided; do not fabricate testimonials, pricing, or deployment claims.
 
 ## Evidence on Hand
 
-- `PRD-fixyield-vamm.md` — the approved reference spec: architecture, event schema, testing strategy, roadmap L3->L7, risks, resolved decisions.
+- `PRD-revse-vamm.md` — the approved reference spec: architecture, event schema, testing strategy, roadmap L3->L7, risks, resolved decisions.
 - `stellar-journey-to-mastery.md` — program requirements for Level 3 (Orange Belt).
 - Event schema (PRD §5.5): fixed_quote, deposit_fixed, borrow_fixed, variable_rate_sync, allocated, maturity_claimed, liquidation, upgraded.
 - No real user data, testimonials, or press exist yet. Do not fabricate deployment claims or usage numbers.

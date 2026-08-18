@@ -1,4 +1,4 @@
-# PRD: "FixYield" — Fixed-Rate Lending Market on Stellar (Virtual AMM / Interest-Rate Swap Engine)
+# PRD: "Revse" — Fixed-Rate Lending Market on Stellar (Virtual AMM / Interest-Rate Swap Engine)
 
 **Program:** Stellar Journey to Mastery — Level 3 (Orange Belt)
 **Status:** v1.0 (decisions resolved)
@@ -171,4 +171,4 @@ Frontend subscribes via getEvents + SSE relay; mobile-responsive cards update li
 | Oracle source | Reflector SEP-40 Pulse |
 | Yield source | Blend lending pool |
 | fUSDC token | Yes, mintable SEP-41 contract token |
-| Product name | FixYield |
+| Product name | Revse |

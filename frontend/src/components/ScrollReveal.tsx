@@ -11,10 +11,13 @@ export function ScrollReveal({
   children,
   className = "",
   delay = 0,
+  pop = false,
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
+  /** stronger reveal: rises from below, overshoots up, then settles */
+  pop?: boolean;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [shown, setShown] = useState(false);
@@ -36,6 +39,18 @@ export function ScrollReveal({
     io.observe(el);
     return () => io.disconnect();
   }, []);
+
+  if (pop) {
+    return (
+      <div
+        ref={ref}
+        style={{ animationDelay: `${delay}ms` }}
+        className={`${shown ? "pop-up" : "opacity-0"} ${className}`}
+      >
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div

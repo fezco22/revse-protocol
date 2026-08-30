@@ -122,6 +122,27 @@ input[type="number"] {
   }
 }
 
+.pop-up {
+  animation: pop-up 950ms var(--ease-expo) both;
+  will-change: transform, opacity;
+}
+@keyframes pop-up {
+  0% {
+    opacity: 0;
+    transform: translateY(72px) scale(0.93);
+    filter: blur(3px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-12px) scale(1.015);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .rise {
   animation: rise 600ms var(--ease-expo) both;
 }

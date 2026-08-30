@@ -138,7 +138,7 @@ export default function LandingPage() {
             </h2>
           </ScrollReveal>
 
-          <ScrollReveal delay={120} className="mt-14">
+          <ScrollReveal pop delay={120} className="mt-14">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/mockup.png"

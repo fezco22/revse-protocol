@@ -63,6 +63,7 @@ states, and waits for on-chain confirmation before reading new state back.
 
 ## Live demo
 
+- Demo video: [Watch the walkthrough](https://drive.google.com/file/d/1Rl5NJkTeATH4tssSN0-FPi9U7azU69gU/view?usp=sharing)
 - App: `TODO: add Vercel URL after deploy`
 - Network: Stellar Testnet. Connect Freighter (set to Testnet), get test USDC
   from the in-app faucet link, add the USDC trustline, then deposit.

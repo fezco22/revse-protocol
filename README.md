@@ -1,33 +1,70 @@
+<div align="center">
+
 # Revse
 
-**Fixed-rate lending market on Stellar.** Lock a fixed APY on your USDC for a
-fixed term, priced by an on-chain virtual AMM. Deposit, borrow, repay, claim,
-and swap XLM to USDC, all real on the Stellar testnet with a single wallet
-signature per action.
+**Fixed-rate lending market on Stellar.**
 
-> Stellar Journey to Mastery, Level 4 (Green Belt) submission.
+Lock a fixed APY on your USDC for a fixed term, priced by an on-chain virtual
+AMM. Deposit, borrow, repay, claim, and swap XLM to USDC, all real on the
+Stellar testnet with one wallet signature per action.
+
+Next.js 16 · React 19 · TypeScript · Soroban (Rust) · Stellar Testnet
+
+</div>
 
 ---
 
-## What it does
+## Contents
 
-Lending rates on Stellar float and reprice every ledger (about every 5 seconds),
-so depositors and borrowers cannot predict cash flow. Revse turns that
-uncertainty into one number you keep for the whole term.
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Live demo](#live-demo)
+4. [Deployed contracts](#deployed-contracts-stellar-testnet)
+5. [How it works](#how-it-works)
+6. [Architecture](#architecture)
+7. [Tech stack](#tech-stack)
+8. [Project structure](#project-structure)
+9. [Run locally](#run-locally)
+10. [Deploy](#deploy)
+11. [Testing and CI](#testing-and-ci)
+12. [Configuration](#configuration)
+13. [Roadmap](#roadmap)
+14. [Disclaimer](#disclaimer)
 
-- **Deposit** USDC and lock a fixed APY for 30 days, priced live by the RateVAMM.
-- **Borrow** against USDC collateral at a fixed rate (over-collateralized).
-- **Repay** and **claim** at maturity.
-- **Swap** XLM to USDC in-app through the native Stellar DEX (one signature, no
-  external exchange).
-- **Simulate** outcomes against your real Stellar balances.
-- **Dashboard** with your positions, stats, and live protocol health.
+---
+
+## Overview
+
+Lending rates on Stellar float and reprice every ledger, roughly every 5
+seconds, so depositors and borrowers cannot predict their cash flow. Revse turns
+that uncertainty into a single number you keep for the whole term. A depositor
+locks a fixed APY quoted live by an on-chain virtual AMM, receives an fUSDC
+receipt, and claims principal plus interest at maturity. A borrower posts USDC
+collateral and borrows at a fixed cost.
+
+This repository is the Level 4 (Green Belt) submission for the Stellar Journey to
+Mastery program: a production-ready MVP with real on-chain flows on testnet.
+
+## Features
+
+| Feature | What it does |
+|---|---|
+| Fixed-rate deposit | Lock a fixed APY on USDC for a 30 day term, priced by RateVAMM |
+| Fixed-rate borrow | Post USDC collateral, borrow at a fixed rate, repay principal only |
+| Repay and claim | Settle a loan or claim principal plus interest at maturity |
+| In-app swap | Convert XLM to USDC through the native Stellar DEX, one signature |
+| Simulate | Project outcomes against your real Stellar balances |
+| Dashboard | Positions, portfolio stats, and live protocol health in one place |
+| Wallets | Freighter and Albedo, with session persistence |
+
+Every mutation has explicit loading, signing, confirming, success, and error
+states, and waits for on-chain confirmation before reading new state back.
 
 ## Live demo
 
 - App: `TODO: add Vercel URL after deploy`
-- Network: Stellar Testnet. Get test USDC from the in-app faucet link
-  (faucet.circle.com), add the USDC trustline, then deposit.
+- Network: Stellar Testnet. Connect Freighter (set to Testnet), get test USDC
+  from the in-app faucet link, add the USDC trustline, then deposit.
 
 ## Deployed contracts (Stellar Testnet)
 
@@ -41,64 +78,71 @@ uncertainty into one number you keep for the whole term.
 | MockPool | `CCVSBTACL4E7RHZKENSCR2NZ6WKUOJZB7VUCZMOC3VWC3GHZQRKBQWVY` |
 | USDC (SAC) | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` |
 
-Explore any contract on [Stellar Expert (testnet)](https://stellar.expert/explorer/testnet).
+Open any address on [Stellar Expert (testnet)](https://stellar.expert/explorer/testnet).
+
+## How it works
+
+**Deposit is one signed transaction.** PositionSettlement pulls USDC using the
+SAC `transfer` (the user authorizes it inside the same signature), calls RateVAMM
+to lock the rate, mints fUSDC, and stores the position. The UI polls for
+confirmation, then reads the new position from the settlement contract.
+
+**The fixed rate is priced on-chain.** RateVAMM computes
+`base = idle_rate + slope * utilization`, clamps it to a configured band, then
+applies a constant-product marginal curve per trade. Property tests assert no
+free lunch, rate monotonicity, and pool solvency.
+
+**Swap uses the native DEX.** XLM to USDC runs through a Stellar path payment,
+quoted live from Horizon, with a one-time USDC trustline step.
 
 ## Architecture
 
 ```
 Frontend (Next.js)                    Soroban contracts (Rust)
 ------------------                    ------------------------
-Wallet: Freighter / Albedo            OracleHub      variable-rate + price feeds
-Reads:  Soroban RPC (state, quote)    RateVAMM       prices fixed APY from utilization
+Wallet: Freighter / Albedo            OracleHub           variable-rate and price feeds
+Reads:  Soroban RPC (state, quote)    RateVAMM            prices fixed APY from utilization
         Horizon (balances, DEX)       PositionSettlement  vault, positions, claim, repay
 Writes: signed tx -> RPC              StrategyAdapter     idle-fund deployment
-Swap:   path payment -> Horizon       fUSDC          SEP-41 receipt token
-                                      MockPool       stand-in lending pool
+Swap:   path payment -> Horizon       fUSDC               SEP-41 receipt token
+                                      MockPool            stand-in lending pool
 ```
-
-A deposit is one signed transaction: PositionSettlement pulls USDC (SAC
-`transfer` with the user's auth), calls RateVAMM to lock the rate, mints fUSDC,
-and stores the position. The UI waits for on-chain confirmation before reading
-the new state back.
-
-The fixed rate comes from RateVAMM: `base = idle_rate + slope * utilization`,
-clamped, then a constant-product marginal curve per trade. Property tests assert
-no free lunch, rate monotonicity, and solvency.
 
 ## Tech stack
 
-- **Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS v4, three.js
-  (ambient/hero backdrops), `@stellar/stellar-sdk` v16.
-- **Contracts:** Rust, `soroban-sdk`, target `wasm32v1-none`, size-gated under
-  64 KB.
-- **Monitoring/analytics:** Vercel Analytics + Speed Insights, app-wide React
-  error boundary.
-- **Tests:** Vitest + React Testing Library (frontend), Rust unit, integration,
-  and property tests (contracts).
-- **CI:** GitHub Actions (fmt, clippy, tests, wasm size gate, frontend
-  lint/typecheck/test/build).
+- **Frontend:** Next.js 16, React 19, TypeScript, Tailwind CSS v4, three.js for
+  the hero and ambient backdrops, `@stellar/stellar-sdk` v16.
+- **Contracts:** Rust, `soroban-sdk`, built for `wasm32v1-none` and size gated
+  under 64 KB.
+- **Monitoring and analytics:** Vercel Analytics, Vercel Speed Insights, and an
+  app-wide React error boundary.
+- **Tests:** Vitest with React Testing Library on the frontend; Rust unit,
+  integration, and property tests on the contracts.
+- **CI:** GitHub Actions runs fmt, clippy, contract tests, the wasm size gate,
+  and frontend lint, typecheck, test, and build.
 
 ## Project structure
 
 ```
 revse/
-├── contracts/           Soroban workspace (6 contracts + common) and deploy script
-│   ├── contracts/       oracle-hub, rate-vamm, position-settlement, ...
+├── contracts/           Soroban workspace and deterministic deploy script
+│   ├── contracts/       oracle-hub, rate-vamm, position-settlement,
+│   │                    strategy-adapter, fusdc, mock-pool
 │   ├── common/          shared math (rate scaling, term interest)
-│   └── scripts/         deterministic testnet deploy + wiring
+│   └── scripts/         testnet deploy, init, and wiring
 ├── frontend/            Next.js app
 │   └── src/
 │       ├── app/         routes: landing, market, swap, simulate, borrow, dashboard
-│       ├── components/  Shell, nav, 3D backdrops, UI atoms, error boundary
-│       ├── lib/         chain access (RPC + Horizon), formatting, types
+│       ├── components/  shell, nav, 3D backdrops, UI atoms, error boundary
+│       ├── lib/         chain access (RPC and Horizon), formatting, types
 │       └── state/       app context (wallet, pool, positions, mutations)
 ├── README.md
-└── SUBMISSION-L4.md     Level 4 submission idea + status
+└── SUBMISSION-L4.md     Level 4 submission idea and status
 ```
 
 ## Run locally
 
-Frontend (works against the deployed testnet contracts out of the box):
+The frontend works against the deployed testnet contracts with no configuration.
 
 ```bash
 cd frontend
@@ -106,17 +150,8 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000. Connect Freighter (set to Testnet), get USDC from
-the faucet link, add the trustline, then deposit.
-
-Checks:
-
-```bash
-npm run lint
-npm run typecheck
-npm run test
-npm run build
-```
+Open http://localhost:3000. Connect Freighter (Testnet), get USDC from the
+faucet link, add the trustline, then deposit.
 
 Contracts:
 
@@ -127,22 +162,43 @@ cargo build --release --target wasm32v1-none \
   -p fusdc -p mock-pool -p oracle-hub -p rate-vamm -p strategy-adapter -p position-settlement
 ```
 
-Deploy to a fresh testnet (see `contracts/scripts/deploy-testnet.sh`):
+## Deploy
+
+### Frontend (Vercel)
+
+1. Push this repository to GitHub.
+2. On Vercel, import the repository and set **Root Directory** to `frontend`.
+3. Deploy. No environment variables are required: the testnet contract addresses
+   are compiled in as defaults. Vercel Analytics and Speed Insights activate
+   automatically on the Vercel domain.
+
+### Contracts (fresh testnet)
 
 ```bash
-cp contracts/scripts/.env.example contracts/.env   # fill admin + token + feed
-bash contracts/scripts/deploy-testnet.sh
+cp contracts/scripts/.env.example contracts/.env   # fill admin, token, feed
+bash contracts/scripts/deploy-testnet.sh           # build, deploy, init, wire
 ```
 
-## Deploy the frontend (Vercel)
+The script deploys all six contracts, initializes them in the integration-tested
+order, and records every address and wasm hash to `contracts/deployments.env`.
 
-1. Push this repo to GitHub.
-2. On Vercel, import the repo and set **Root Directory** to `frontend`.
-3. Deploy. No environment variables are required: the testnet contract
-   addresses are compiled in as defaults (override with `NEXT_PUBLIC_*` env
-   vars to point at a different deployment).
+## Testing and CI
 
-## Configuration (optional overrides)
+```bash
+cd frontend
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+```
+
+Contracts run `cargo test --workspace` (unit, integration across the full
+contract chain, and property tests). GitHub Actions runs the full suite plus the
+64 KB wasm size gate on every push and pull request.
+
+## Configuration
+
+All values are optional overrides. Defaults point at the deployed testnet.
 
 | Variable | Purpose |
 |---|---|
@@ -152,7 +208,16 @@ bash contracts/scripts/deploy-testnet.sh
 | `NEXT_PUBLIC_SOROBAN_RPC` | Soroban RPC URL |
 | `NEXT_PUBLIC_HORIZON` | Horizon URL |
 
-## Status
+## Roadmap
 
-Level 4 target: production-ready MVP on testnet with real on-chain flows. See
-[SUBMISSION-L4.md](./SUBMISSION-L4.md).
+- **MVP (now):** single USDC pool, 30 day term, live on testnet. Deposit,
+  borrow, repay, claim, and swap all work end to end.
+- **Growth (Level 4 to 5):** onboard real users, collect feedback, add
+  multi-term options (7, 30, 90 days).
+- **Mainnet (Level 6):** real USDC, security audit, monitoring, mainnet launch.
+
+## Disclaimer
+
+This is a protocol concept build on Stellar testnet. Contracts are unit tested
+and size gated. Testnet prices are not real market rates. Audited mainnet
+deployments may carry different risk parameters.

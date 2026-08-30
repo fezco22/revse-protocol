@@ -20,16 +20,17 @@ Next.js 16 · React 19 · TypeScript · Soroban (Rust) · Stellar Testnet
 2. [Features](#features)
 3. [Live demo](#live-demo)
 4. [Deployed contracts](#deployed-contracts-stellar-testnet)
-5. [How it works](#how-it-works)
-6. [Architecture](#architecture)
-7. [Tech stack](#tech-stack)
-8. [Project structure](#project-structure)
-9. [Run locally](#run-locally)
-10. [Deploy](#deploy)
-11. [Testing and CI](#testing-and-ci)
-12. [Configuration](#configuration)
-13. [Roadmap](#roadmap)
-14. [Disclaimer](#disclaimer)
+5. [On-chain activity](#on-chain-activity)
+6. [How it works](#how-it-works)
+7. [Architecture](#architecture)
+8. [Tech stack](#tech-stack)
+9. [Project structure](#project-structure)
+10. [Run locally](#run-locally)
+11. [Deploy](#deploy)
+12. [Testing and CI](#testing-and-ci)
+13. [Configuration](#configuration)
+14. [Roadmap](#roadmap)
+15. [Disclaimer](#disclaimer)
 
 ---
 
@@ -79,6 +80,14 @@ states, and waits for on-chain confirmation before reading new state back.
 | USDC (SAC) | `CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA` |
 
 Open any address on [Stellar Expert (testnet)](https://stellar.expert/explorer/testnet).
+
+## On-chain activity
+
+**11 distinct wallets** have interacted with the contracts (10 end-users + 1 admin),
+across 10 deposits, 4 fixed-rate borrows, and 14 vAMM quotes.
+
+See [ONCHAIN-WALLETS.md](ONCHAIN-WALLETS.md) for the full per-wallet breakdown and
+what each wallet did (deposit / borrow / oracle update). Snapshot: 2026-08-31.
 
 ## How it works
 

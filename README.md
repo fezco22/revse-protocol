@@ -79,6 +79,12 @@ states, and waits for on-chain confirmation before reading new state back.
 
 <p align="center"><sub>Mobile responsive: landing, wallet connect with the live fixed APY, and the position dashboard.</sub></p>
 
+<p align="center">
+  <img src="docs/screenshots/analytics.png" alt="Vercel Analytics dashboard for the production deployment" width="80%" />
+</p>
+
+<p align="center"><sub>Monitoring: Vercel Analytics on the production deployment (visitors, page views, bounce rate).</sub></p>
+
 ## Deployed contracts (Stellar Testnet)
 
 | Contract | Address |

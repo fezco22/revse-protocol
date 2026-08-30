@@ -92,11 +92,11 @@ Done in code and committed:
 - [x] Proper project structure and documentation (README, this file)
 - [x] 15+ meaningful commits
 
-Needs an account or real users (owner to complete):
+Completed:
 
-- [ ] Public GitHub repository (create repo, push)
-- [ ] Production deployment on Vercel (import repo, root directory = frontend)
-- [ ] 10+ real users onboarded, with wallet interaction proof
-- [ ] Basic user feedback collection (form) and summary
-- [ ] Live demo video (1 to 2 minutes)
-- [ ] Screenshots: product UI, mobile view, analytics dashboard
+- [x] Public GitHub repository (github.com/fezco22/revse-protocol)
+- [x] Production deployment on Vercel (https://revse-protocol.vercel.app/)
+- [x] 10+ real users onboarded, with wallet interaction proof (11 wallets, see ONCHAIN-WALLETS.md)
+- [x] Basic user feedback collection and summary (FEEDBACK.md)
+- [x] Live demo video (README Live demo section)
+- [x] Screenshots: product UI and mobile view (docs/screenshots, embedded in README)

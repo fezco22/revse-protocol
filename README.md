@@ -21,16 +21,17 @@ Next.js 16 · React 19 · TypeScript · Soroban (Rust) · Stellar Testnet
 3. [Live demo](#live-demo)
 4. [Deployed contracts](#deployed-contracts-stellar-testnet)
 5. [On-chain activity](#on-chain-activity)
-6. [How it works](#how-it-works)
-7. [Architecture](#architecture)
-8. [Tech stack](#tech-stack)
-9. [Project structure](#project-structure)
-10. [Run locally](#run-locally)
-11. [Deploy](#deploy)
-12. [Testing and CI](#testing-and-ci)
-13. [Configuration](#configuration)
-14. [Roadmap](#roadmap)
-15. [Disclaimer](#disclaimer)
+6. [User feedback](#user-feedback)
+7. [How it works](#how-it-works)
+8. [Architecture](#architecture)
+9. [Tech stack](#tech-stack)
+10. [Project structure](#project-structure)
+11. [Run locally](#run-locally)
+12. [Deploy](#deploy)
+13. [Testing and CI](#testing-and-ci)
+14. [Configuration](#configuration)
+15. [Roadmap](#roadmap)
+16. [Disclaimer](#disclaimer)
 
 ---
 
@@ -63,10 +64,20 @@ states, and waits for on-chain confirmation before reading new state back.
 
 ## Live demo
 
+- App: [revse-protocol.vercel.app](https://revse-protocol.vercel.app/)
 - Demo video: [Watch the walkthrough](https://drive.google.com/file/d/1Rl5NJkTeATH4tssSN0-FPi9U7azU69gU/view?usp=sharing)
-- App: `TODO: add Vercel URL after deploy`
 - Network: Stellar Testnet. Connect Freighter (set to Testnet), get test USDC
   from the in-app faucet link, add the USDC trustline, then deposit.
+
+### Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/landing-mobile.jpg" alt="Revse landing on mobile" width="30%" />
+  <img src="docs/screenshots/connect-mobile.jpg" alt="Connect wallet and live fixed APY on mobile" width="30%" />
+  <img src="docs/screenshots/dashboard-mobile.jpg" alt="Dashboard with positions and protocol health on mobile" width="30%" />
+</p>
+
+<p align="center"><sub>Mobile responsive: landing, wallet connect with the live fixed APY, and the position dashboard.</sub></p>
 
 ## Deployed contracts (Stellar Testnet)
 
@@ -89,6 +100,15 @@ across 10 deposits, 4 fixed-rate borrows, and 14 vAMM quotes.
 
 See [ONCHAIN-WALLETS.md](ONCHAIN-WALLETS.md) for the full per-wallet breakdown and
 what each wallet did (deposit / borrow / oracle update). Snapshot: 2026-08-31.
+
+## User feedback
+
+Early testnet users ran the deposit, borrow, and claim flows and shared feedback.
+Highlights: the single-signature deposit and the locked-rate guarantee were the
+most praised, while guided onboarding and borrow risk visibility were the top
+requests.
+
+Full responses and the summary are in [FEEDBACK.md](FEEDBACK.md).
 
 ## How it works
 

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useApp } from "@/state/app";
 import { TERM_DAYS, ratePct, usdCompact } from "@/lib/format";
 import { RateSurface } from "@/components/RateSurface";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { FaucetButton } from "@/components/FaucetButton";
 import { IconWallet, IconArrow, IconCheck, IconAlert } from "@/components/icons";
 
@@ -114,6 +115,42 @@ export default function LandingPage() {
             )}
           </div>
         </div>
+      </section>
+
+      {/* ============ PRODUCT SHOWCASE ============ */}
+      <section className="relative overflow-hidden border-b border-hairline py-24 lg:py-32">
+        {/* soft mint glow behind the device */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[820px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 blur-[120px]"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(77,227,161,0.35) 0%, rgba(77,227,161,0.10) 45%, transparent 70%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-6xl px-6 text-center">
+          <ScrollReveal>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-ink-muted">
+              Your whole position, one screen
+            </p>
+            <h2 className="mx-auto mt-4 max-w-[20ch] text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
+              Deposit, borrow, and track fixed yield in a single dashboard.
+            </h2>
+          </ScrollReveal>
+
+          <ScrollReveal delay={120} className="mt-14">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/mockup.png"
+              alt="Revse dashboard on a laptop, showing deposits, protocol health, and live events"
+              className="mx-auto w-full max-w-5xl select-none drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)]"
+              draggable={false}
+            />
+          </ScrollReveal>
+        </div>
+
+        {/* fade the device into the page */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-carbon" />
       </section>
 
       {/* ============ FACTS STRIP ============ */}

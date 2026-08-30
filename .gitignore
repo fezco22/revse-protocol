@@ -44,3 +44,4 @@ npm-debug.log*
 # Design tooling (impeccable skill), not project code
 .agents/
 skills-lock.json
+frontend/mockup/
